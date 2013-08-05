@@ -1,0 +1,91 @@
+{
+    "aggregationList": [{
+        "average": 20,
+        "bucketList": [{
+            "count": 1,
+            "startRange": 100,
+            "unitCount": 1
+        }],
+        "componentName": "test",
+        "count": 20,
+        "duration": 30,
+        "functionName": "test",
+        "id": "test",
+        "maximum": 30,
+        "minimum": 30,
+        "startTime": 1372733071409,
+        "unitAverage": 20,
+        "unitMaximum": 2,
+        "unitMinimum": 2
+    }],
+    "aggregationRanges": "test",
+    "domain": "test",
+    "host": "test",
+    "id": "test",
+    "measurementList": [{
+        "componentName": "test",
+        "correlationId": "test",
+        "correlationRequester": "requester",
+        "createOrder": 2,
+        "duration": 10,
+        "failStatus": true,
+        "functionName": "test",
+        "id": "test",
+        "metricsList": [{
+            "name": "exception",
+            "value": "java.lang.IllegalArgumentException"
+        }],
+        "parentId": "test",
+        "threadName": "test",
+        "timestamp": 1372733071405,
+        "user": "test",
+        "workUnits": 3
+    }],
+    "pid": "test",
+    "service": "test",
+    "serviceGroup": "test",
+    "usageList": [{
+        "checkTime": 1372733071528,
+        "collectorList": [{
+            "count": 100,
+            "name": "GC",
+            "time": 360000
+        }, {
+            "count": 100,
+            "name": "GC2",
+            "time": 360000
+        }],
+        "cpuTime": 1000,
+        "heapList": [{
+            "max": 2056000000,
+            "name": "heap1",
+            "used": 1480000000
+        }, {
+            "max": 2056000000,
+            "name": "heap2",
+            "used": 1480000000
+        }],
+        "heapMax": 128,
+        "heapUsed": 64,
+        "nonHeapMax": 0,
+        "nonHeapUsed": 0,
+        "processorCount": 8,
+        "threadCount": 8,
+        "threadList": [{
+            "cpuTime": 1000,
+            "name": "threadName",
+            "state": "active",
+            "userTime": 1000
+        }, {
+            "cpuTime": 1000,
+            "name": "threadName2",
+            "state": "active",
+            "userTime": 1000
+        }],
+        "upTime": 3600,
+        "usageId": "5d58598b-bea9-4737-b798-068d907748b6",
+        "userTime": 1000
+    }],
+    "user": "test",
+    "version": "test"
+}

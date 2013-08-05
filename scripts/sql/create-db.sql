@@ -1,0 +1,14 @@
+
+DROP USER 'metrics'@'localhost';
+CREATE USER 'metrics'@'localhost' IDENTIFIED BY 'metrics';
+
+CREATE DATABASE metrics
+  DEFAULT CHARACTER SET utf8
+  DEFAULT COLLATE utf8_general_ci;
+
+GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON metrics.* TO 'metrics'@'localhost' IDENTIFIED BY 'metrics';
+GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON metrics.* TO 'metrics'@'192.168.1.%' IDENTIFIED BY 'metrics';
+GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON metrics.* TO 'metrics'@'%' IDENTIFIED BY 'metrics';
+FLUSH PRIVILEGES;
+
+

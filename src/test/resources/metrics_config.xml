@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		abstract="false" lazy-init="default" autowire="default"
+		destroy-method="close">
+		<property name="driverClass" value="${jdbc.driver}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="minPoolSize" value="${jdbc.minPoolSize}" />
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}" />
+		<property name="maxIdleTime" value="${jdbc.maxIdleTime}" />
+		<property name="initialPoolSize" value="${jdbc.initialPoolSize}" />
+		<property name="numHelperThreads" value="${jdbc.numHelperThreads}" />
+	</bean>
+
+	<bean id="metricsCollectorFactory" class="org.easymetrics.easymetrics.MetricsCollectorFactory">
+		<property name="metricsEngine" ref="metricsEngine" />
+	</bean>
+
+	<bean id="metricsEngine" class="org.easymetrics.easymetrics.engine.DefaultMetricsEngine">
+		<property name="metricsMeasureWorker" ref="metricsMeasureWorker" />
+		<property name="collectMetrics" value="true" />
+	</bean>
+
+	<bean id="metricsMeasureWorker"
+		class="org.easymetrics.easymetrics.measure.DefaultMeasureWorker">
+		<property name="metricsAggregateWorker" ref="metricsAggregateWorker" />
+		<property name="metricsPublishWorker" ref="metricsPublishWorker" />
+	</bean>
+
+	<bean id="metricsAggregateWorker"
+		class="org.easymetrics.easymetrics.aggregate.DefaultAggregateWorker">
+		<property name="aggregationRanges"
+			value="0,2,5,10,20,50,100,200,500,1000,2000,5000,10000,20000,50000" />
+		<property name="aggregationInterval" value="1800000" />
+		<property name="aggregationFilter" value="true" />
+		<property name="metricsPublishWorker" ref="metricsPublishWorker" />
+	</bean>
+
+	<bean id="metricsRuntimeWorker"
+		class="org.easymetrics.easymetrics.runtime.DefaultRuntimeWorker">
+		<property name="detailGc" value="true" />
+		<property name="detailThread" value="true" />
+		<property name="detailHeap" value="true" />
+		<property name="checkInterval" value="60000" />
+		<property name="metricsPublishWorker" ref="metricsPublishWorker" />
+	</bean>
+
+	<bean id="metricsPublishWorker"
+		class="org.easymetrics.easymetrics.publish.DefaultPublishWorker">
+		<property name="metricsPublisherList">
+			<list>
+				<ref bean="metricsDaoPublisher" />
+				<ref bean="metricsHttpPublisher" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="metricsDaoPublisher" class="org.easymetrics.easymetrics.publish.MetricsDaoPublisher">
+		<property name="metricsDao" ref="metricsDao" />
+	</bean>
+
+	<bean id="metricsHttpPublisher"
+		class="org.easymetrics.easymetrics.publish.MetricsHttpPublisher">
+	</bean>
+
+	<bean id="metricsDao"
+		class="org.easymetrics.easymetrics.publish.dao.DefaultMetricsDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="metricsProxyProcessor" class="org.easymetrics.easymetrics.cglib.MetricsProxyProcessor" />
+
+	<bean id="metricsHelloWorld" class="org.easymetrics.easymetrics.cglib.MetricsHelloWorld" />
+
+	<bean id="measurableHelloWorld" class="org.easymetrics.easymetrics.cglib.MeasurableHelloWorld" />
+</beans>
