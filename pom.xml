@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.easymetrics</groupId>
 	<artifactId>easymetrics</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>easymetrics</name>
 	<description>EasyMetrics is a metrics framework to collect runtime usage information to indicate the realtime application performance.</description>
@@ -18,6 +18,7 @@
 	</licenses>
 
 	<scm>
+		<url>scm:git:https://github.com/archibald2012/easymetrics.git</url>
 		<connection>scm:git:https://github.com/archibald2012/easymetrics.git</connection>
 		<developerConnection>scm:git:https://github.com/archibald2012/easymetrics.git</developerConnection>
 	</scm>
