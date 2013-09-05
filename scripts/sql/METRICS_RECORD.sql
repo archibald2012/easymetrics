@@ -19,4 +19,220 @@ CREATE TABLE METRICS_RECORD
   PRIMARY KEY (RECORD_ID)
 );
 
+DROP TABLE IF EXISTS METRICS_AGGREGATION;
+
+CREATE TABLE METRICS_AGGREGATION
+(
+  AGGREGATION_ID  VARCHAR(64)             	NOT NULL,
+  RECORD_ID       VARCHAR(64)             	NOT NULL,
+  COMPONENT_NAME  VARCHAR(64)             	NOT NULL,
+  FUNCTION_NAME   VARCHAR(64)             	NOT NULL,
+  START_TIME      DATETIME   				NOT NULL,
+  DURATION        INT                       NOT NULL,
+  MAXIMUM         INT                       NOT NULL,
+  MINIMUM         INT                       NOT NULL,
+  AVERAGE         DECIMAL		            NOT NULL,
+  UNIT_MAXIMUM    INT                       NOT NULL,
+  UNIT_MINIMUM    INT                       NOT NULL,
+  UNIT_AVERAGE    DECIMAL		            NOT NULL,
+  COUNT           INT                       NOT NULL,
+  CREATED_FROM    VARCHAR(30)             	NOT NULL,
+  UPDATED_AT      DATETIME,
+  UPDATED_FROM    VARCHAR(30),
+  CREATED_AT      DATETIME,
+  PRIMARY KEY (AGGREGATION_ID)
+);
+
+
+CREATE INDEX FK_METRICS_AGGREGATION_RECORD ON METRICS_AGGREGATION (RECORD_ID);
+
+alter table METRICS_AGGREGATION
+   add constraint FK_AGGREGATION_RECORD_ID foreign key (RECORD_ID)
+      references METRICS_RECORD (RECORD_ID);
+
+DROP TABLE IF EXISTS METRICS_AGGREGATION_BUCKET;
+
+CREATE TABLE METRICS_AGGREGATION_BUCKET
+(
+  AGGREGATION_ID  VARCHAR(64)             	NOT NULL,
+  START_RANGE     INT                       NOT NULL,
+  COUNT           INT                       NOT NULL,
+  UNIT_COUNT      INT                       NOT NULL,
+  CREATED_FROM    VARCHAR(30)             	NOT NULL,
+  UPDATED_AT      DATETIME,
+  UPDATED_FROM    VARCHAR(30),
+  CREATED_AT      DATETIME
+);
+
+
+CREATE INDEX FK_BUCKET_AGGREGATION_ID ON METRICS_AGGREGATION_BUCKET (AGGREGATION_ID);
+
+
+alter table METRICS_AGGREGATION_BUCKET
+   add constraint FK_AGGREGATION_METRICS_ID foreign key (AGGREGATION_ID)
+      references METRICS_AGGREGATION (AGGREGATION_ID);
+
+
+DROP TABLE IF EXISTS METRICS_MEASUREMENT;
+
+CREATE TABLE METRICS_MEASUREMENT
+(
+  MEASUREMENT_ID  VARCHAR(64)             		NOT NULL,
+  RECORD_ID       VARCHAR(64)             		NOT NULL,
+  PARENT_ID       VARCHAR(64),
+  CORRELATION_ID  VARCHAR(64),
+  REQUESTER_ID    VARCHAR(64),
+  COMPONENT_NAME  VARCHAR(64)             		NOT NULL,
+  FUNCTION_NAME   VARCHAR(64)             		NOT NULL,
+  THREAD_NAME     VARCHAR(64)             		NOT NULL,
+  REQUEST_USER    VARCHAR(16)             		NOT NULL,
+  TIME		      DATETIME					  	NOT NULL,
+  DURATION        INT                        	NOT NULL,
+  WORK_UNITS      INT                        	NOT NULL,
+  FAIL_STATUS     TINYINT(1),
+  CREATE_ORDER    INT,
+  CREATED_FROM    VARCHAR(30)             		NOT NULL,
+  UPDATED_AT      DATETIME,
+  UPDATED_FROM    VARCHAR(30),
+  CREATED_AT      DATETIME,
+  PRIMARY KEY (MEASUREMENT_ID)
+);
+
+
+CREATE INDEX FK_METRICS_MEASUREMENT_RECORD ON METRICS_MEASUREMENT (RECORD_ID);
+
+
+alter table METRICS_MEASUREMENT
+   add constraint FK_MEASUREMENT_RECORD_ID foreign key (RECORD_ID)
+      references METRICS_RECORD (RECORD_ID);
+
+
+
+DROP TABLE IF EXISTS METRICS_MEASUREMENT_METRICS;
+
+CREATE TABLE METRICS_MEASUREMENT_METRICS
+(
+  MEASUREMENT_ID  	VARCHAR(64)             NOT NULL,
+  NAME            	VARCHAR(64)             NOT NULL,
+  VALUE           	VARCHAR(1024),
+  CREATED_FROM      VARCHAR(30)             NOT NULL,
+  UPDATED_AT      	DATETIME,
+  UPDATED_FROM      VARCHAR(30),
+  CREATED_AT      	DATETIME
+);
+
+
+CREATE INDEX FK_METRICS_MEASUREMENT_ID ON METRICS_MEASUREMENT_METRICS (MEASUREMENT_ID);
+
+
+alter table METRICS_MEASUREMENT_METRICS
+   add constraint FK_MEASUREMENT_METRCIS_ID foreign key (MEASUREMENT_ID)
+      references METRICS_MEASUREMENT (MEASUREMENT_ID);
+
+
+DROP TABLE IF EXISTS METRICS_USAGE_RUNTIME;
+
+create table METRICS_USAGE_RUNTIME 
+(
+   USAGE_ID             VARCHAR(64)         not null,
+   RECORD_ID            VARCHAR(64)         not null,
+   CHECK_TIME           DATETIME 			not null,
+   CPU_COUNT            BIGINT              not null,
+   THREAD_COUNT         BIGINT              not null,
+   UP_TIME              BIGINT              not null,
+   CPU_TIME             BIGINT              not null,
+   USER_TIME            BIGINT              not null,
+   HEAP_MAX             BIGINT              not null,
+   HEAP_USED            BIGINT              not null,
+   NON_HEAP_MAX         BIGINT              not null,
+   NON_HEAP_USED        BIGINT              not null,
+   CREATED_FROM         VARCHAR(30)         not null,
+   UPDATED_AT           DATETIME,
+   UPDATED_FROM         VARCHAR(30),
+   CREATED_AT           DATETIME,
+   PRIMARY KEY (USAGE_ID)
+);
+
+
+CREATE INDEX FK_METRICS_USAGE_RUNTIME ON METRICS_USAGE_RUNTIME (RECORD_ID);
+
+alter table METRICS_USAGE_RUNTIME
+   add constraint FK_METRICS_USAGE_RUNTIME foreign key (RECORD_ID)
+      references METRICS_RECORD (RECORD_ID);
+
+DROP TABLE IF EXISTS METRICS_USAGE_THREAD;
+
+create table METRICS_USAGE_THREAD 
+(
+   USAGE_ID             VARCHAR(64)         not null,
+   NAME                 VARCHAR(64)    		not null,
+   STATE                VARCHAR(64),
+   CPU_TIME             BIGINT,
+   USER_TIME            BIGINT,
+   CREATED_FROM         VARCHAR(30)         not null,
+   UPDATED_AT           DATETIME,
+   UPDATED_FROM         VARCHAR(30),
+   CREATED_AT           DATETIME
+);
+
+
+CREATE INDEX FK_METRICS_USAGE_THREAD ON METRICS_USAGE_THREAD (USAGE_ID);
+
+
+alter table METRICS_USAGE_THREAD
+   add constraint FK_THREAD_USAGE_ID foreign key (USAGE_ID)
+      references METRICS_USAGE_RUNTIME (USAGE_ID);
+
+      
+      DROP TABLE IF EXISTS METRICS_USAGE_HEAP;
+
+create table METRICS_USAGE_HEAP 
+(
+   USAGE_ID             	VARCHAR(64)         not null,
+   NAME                 	VARCHAR(64)    		not null,
+   MEM_MAX              	BIGINT,
+   MEM_USED             	BIGINT,
+   CREATED_FROM           	VARCHAR(30)         not null,
+   UPDATED_AT           	DATETIME,
+   UPDATED_FROM           	VARCHAR(30),
+   CREATED_AT           	DATETIME
+);
+
+
+CREATE INDEX FK_METRICS_USAGE_HEAP ON METRICS_USAGE_HEAP (USAGE_ID);
+
+
+alter table METRICS_USAGE_HEAP
+   add constraint FK_HEAP_USAGE_ID foreign key (USAGE_ID)
+      references METRICS_USAGE_RUNTIME (USAGE_ID);
+
+
+
+DROP TABLE IF EXISTS METRICS_USAGE_GC;
+
+create table METRICS_USAGE_GC 
+(
+   USAGE_ID             VARCHAR(64)         not null,
+   NAME                 VARCHAR(64)		    not null,
+   GC_COUNT             BIGINT,
+   GC_TIME              BIGINT,
+   CREATED_FROM         VARCHAR(30)         not null,
+   UPDATED_AT           DATETIME,
+   UPDATED_FROM         VARCHAR(30),
+   CREATED_AT           DATETIME
+);
+
+CREATE INDEX FK_METRICS_USAGE_GC ON METRICS_USAGE_GC (USAGE_ID);
+
+alter table METRICS_USAGE_GC
+   add constraint FK_GC_USAGE_ID foreign key (USAGE_ID)
+      references METRICS_USAGE_RUNTIME (USAGE_ID);
+
+
+
+
+
+
+
+
 
