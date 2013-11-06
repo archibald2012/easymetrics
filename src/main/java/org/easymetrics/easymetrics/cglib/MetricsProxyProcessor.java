@@ -19,7 +19,7 @@ public class MetricsProxyProcessor implements BeanPostProcessor {
 
 		Class<? extends Object> clazz = bean.getClass();
 		if (isMetricsProxied(clazz)) {
-			return proxyInterceptor.proxyObject(clazz);
+			return proxyInterceptor.proxyObject(bean);
 		}
 
 		return bean;
