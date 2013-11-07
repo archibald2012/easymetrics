@@ -10,6 +10,7 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import org.easymetrics.easymetrics.MetricsProxyHandler;
 import org.easymetrics.easymetrics.engine.MetricsTimer;
+import org.easymetrics.easymetrics.model.annotation.ProxyMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,13 +34,30 @@ public class MetricsObjectInterceptor implements MethodInterceptor {
 			return proxy.invokeSuper(object, args);
 		} else {
 
+			ProxyMetrics proxyMetrics = method.getAnnotation(ProxyMetrics.class);
+
 			Throwable exception = null;
 			MetricsTimer metricsTimer = null;
 			MetricsProxyHandler proxyHandler = MetricsProxyHandler.getInstance();
 
 			try {
-				String componentName = target.getClass().getSimpleName();
-				metricsTimer = proxyHandler.startMetricsTimer(componentName, functionName, initial, args);
+				Class<?> clazz = target.getClass().getSuperclass();
+
+				String componentName = clazz.getSimpleName();
+				Object argument = null;
+
+				if (proxyMetrics != null) {
+					if (proxyMetrics.component().length() > 0) {
+						componentName = proxyMetrics.component();
+					}
+					if (proxyMetrics.function().length() > 0) {
+						functionName = proxyMetrics.function();
+					}
+					if (proxyMetrics.inspectable() >= 0 && proxyMetrics.inspectable() < args.length) {
+						argument = args[proxyMetrics.inspectable()];
+					}
+				}
+				metricsTimer = proxyHandler.startMetricsTimer(componentName, functionName, initial, argument);
 			} catch (RuntimeException e) {
 				if (LOGGER.isWarnEnabled()) {
 					LOGGER.warn("Failed to start metrics with error " + e.getMessage(), e);
@@ -56,7 +74,11 @@ public class MetricsObjectInterceptor implements MethodInterceptor {
 			} finally {
 				try {
 					if (metricsTimer != null) {
-						proxyHandler.stopMetricsTimer(metricsTimer, result, exception);
+						Object argument = null;
+						if (proxyMetrics != null && proxyMetrics.inspectable() == -1) {
+							argument = result;
+						}
+						proxyHandler.stopMetricsTimer(metricsTimer, argument, exception);
 					}
 				} catch (RuntimeException e) {
 					if (LOGGER.isWarnEnabled()) {

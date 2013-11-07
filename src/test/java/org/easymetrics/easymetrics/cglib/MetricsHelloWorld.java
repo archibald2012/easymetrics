@@ -11,12 +11,12 @@ import org.easymetrics.easymetrics.model.annotation.ProxyMetrics;
  */
 public class MetricsHelloWorld {
 
-	@ProxyMetrics(initial = true)
+	@ProxyMetrics(initial = true, inspectable = 0)
 	public Object testHold(String arg1) {
 		try {
 			Thread.sleep(1000L);
 		} catch (InterruptedException e) {
-			
+
 		}
 		return arg1;
 	}
