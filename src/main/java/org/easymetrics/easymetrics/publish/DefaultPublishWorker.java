@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.easymetrics.easymetrics.model.Aggregation;
 import org.easymetrics.easymetrics.model.Measurement;
 import org.easymetrics.easymetrics.model.Publishable;
@@ -139,9 +138,8 @@ public class DefaultPublishWorker extends Thread implements MetricsPublishWorker
 				publisher.publish(record);
 			}
 
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug(metricsPublisherList.size() + " publishers process " + list.size() + " publishables in " + timer.check()
-						+ " ms. publishables=[{}]", ArrayUtils.toString(list.toArray()));
+			if (LOGGER.isInfoEnabled()) {
+				LOGGER.info(metricsPublisherList.size() + " publishers process " + list.size() + " publishables in " + timer.check() + " ms. ");
 			}
 
 		}
