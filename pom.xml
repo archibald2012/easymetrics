@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.easymetrics</groupId>
 	<artifactId>easymetrics</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.2</version>
 	<packaging>jar</packaging>
 	<name>easymetrics</name>
 	<description>EasyMetrics is a metrics framework to collect runtime usage information to indicate the realtime application performance.</description>
