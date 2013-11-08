@@ -70,7 +70,10 @@ public class MetricsObjectInterceptor implements MethodInterceptor {
 				result = invokeMethod.invoke(target, args);
 			} catch (Throwable e) {
 				exception = e.getCause();
-				throw e;
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Found exception from method " + method + " with error " + e.getMessage(), e);
+				}
+				throw exception;
 			} finally {
 				try {
 					if (metricsTimer != null) {

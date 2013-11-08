@@ -65,11 +65,11 @@ public class MetricsMethodInterceptor implements MethodInterceptor {
 			try {
 				result = proxy.invokeSuper(object, args);
 			} catch (Throwable e) {
-				exception = e;
+				exception = e.getCause();
 				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Found exception from method " + method + " with error " + e.getMessage(), e);
+					LOGGER.debug("Found exception from method " + method + " with error " + exception.getMessage(), exception);
 				}
-				throw e;
+				throw exception;
 			} finally {
 				try {
 					if (metricsTimer != null) {
